@@ -6,6 +6,14 @@ Created on Wed Jan 10 19:37:19 2018
 @author: kaustabh
 """
 
+import collections
+import random
+import numpy as np
+import pandas as pd
+import pprint
+import time
+import json
+
 
 
 
@@ -135,13 +143,6 @@ def display(r):
     return ' '.join(r)
 
 
-import collections
-import random
-
-import numpy as np
-import pandas as pd
-
-
 class ExperienceReplay(object):
     """ Represents the experience replay memory that can be randomly sampled. """
 
@@ -265,7 +266,7 @@ class RCube(object):
         
         return self.body
 
-    def rotate(self,r, L): #a face will also self.bodyotate
+    def rotate(self,r, L): #a face will also rotate
         
         t1 = self.body[L[0]]
         t2 = self.body[L[7]]
@@ -387,10 +388,11 @@ class RCube(object):
     
     
     def shuffle(self):
-        
-        import random
+        moves = [self.right_c, self.left_c, self.up_c, self.down_c, 
+                self.front_c, self.back_c, self.back_ac, self.right_ac, 
+                self.left_ac, self.up_ac, self.front_ac, self.down_ac]
         for i in range(random.randint(17,32)):
-            random.choice(self.ALL_RUBIKS_ACTION)
+            random.choice(moves)()  # Fixed: actually execute the chosen move
         return self.body
     
     def reset(self):
@@ -446,8 +448,8 @@ class Field(object):
         
         self.Rmap = Rmap
         self.list_type_to_Rmap = {
-            Rubiks_listType: symbol
-            for symbol, list_type in self.list_type_to_Rmap.items()
+            list_type: symbol
+            for symbol, list_type in self.Rmap_to_list_type.items()
         }
         
     def __getaction__(self, action):
@@ -688,29 +690,29 @@ class Environment(object):
 
         self.current_action = action
         if   action == RubiksAction.RIGHTC:
-            self.RubiksCube.right_c()
+            RubiksCube.right_c()
         elif action == RubiksAction.RIGHTAC:
-            self.RubiksCube.right_ac()
+            RubiksCube.right_ac()
         elif action == RubiksAction.BACKAC:
-            self.RubiksCube.back_ac()
+            RubiksCube.back_ac()
         elif action == RubiksAction.BACKC:
-            self.RubiksCube.back_c()
+            RubiksCube.back_c()
         elif action == RubiksAction.LEFTC:
-            self.RubiksCube.left_c()
+            RubiksCube.left_c()
         elif action == RubiksAction.LEFTAC:
-            self.RubiksCube.left_ac()
+            RubiksCube.left_ac()
         elif action == RubiksAction.UPC:
-            self.RubiksCube.up_c()
+            RubiksCube.up_c()
         elif action == RubiksAction.UPAC:
-            self.RubiksCube.up_ac()
+            RubiksCube.up_ac()
         elif action == RubiksAction.DOWNAC:
-            self.RubiksCube.down_ac()
+            RubiksCube.down_ac()
         elif action == RubiksAction.DOWNC:
-            self.RubiksCube.down_c()
+            RubiksCube.down_c()
         elif action == RubiksAction.FRONTC:
-            self.RubiksCube.front_c()
+            RubiksCube.front_c()
         elif action == RubiksAction.FRONTAC:
-            self.RubiksCube.front_ac()
+            RubiksCube.front_ac()
 
     def timestep(self):
         """ Execute the timestep and return the new observable state. """
@@ -804,7 +806,8 @@ class EpisodeStatistics(object):
         """ Forget all previous statistics and prepare for a new episode. """
         self.timesteps_survived = 0
         self.sum_episode_rewards = 0
-        self.good_moves = 0
+        self.fruits_eaten = 0  # Fixed: added missing attribute
+        self.solved = 0  # Fixed: added missing attribute
         self.termination_reason = None
         self.action_counter = {
             action: 0

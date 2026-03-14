@@ -6,6 +6,8 @@ Created on Wed Jan 10 19:37:19 2018
 @author: kaustabh
 """
 
+import random
+
 
 
 
@@ -159,8 +161,6 @@ def back_ac(r):
     return shift(r, L)
 
 def shuffle(r):
-    
-    import random
     for i in range(random.randint(17,32)):
         random.choice([right_c(r),left_c(r),up_c(r),down_c(r),front_c(r),back_c(r),back_ac(r),right_ac(r),left_ac(r),up_ac(r),front_ac(r),down_ac(r)])
     return r
@@ -279,14 +279,15 @@ def display(r):
             
     return ' '.join(r)
 
-print(r)
-display(r)
-left_ac(r)
-left_ac(r)
-display(r)
-left_ac(r)
-left_ac(r)
-display(r)
+if __name__ == "__main__":
+    print(r)
+    display(r)
+    left_ac(r)
+    left_ac(r)
+    display(r)
+    left_ac(r)
+    left_ac(r)
+    display(r)
 
 
 
