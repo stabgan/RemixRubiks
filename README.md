@@ -1,35 +1,77 @@
 # RemixRubiks
 
+A 3×3 Rubik's Cube simulator and reinforcement-learning environment written in Python.
 
-The beta file is incomplete and work in progress .
+## What It Does
 
-The original rubiksmovement.py file is the total environment of the rubik's cube .
+The project models a Rubik's Cube as a flat 54-element list (one entry per face-sticker) and provides clockwise / anti-clockwise rotation primitives for all six faces. An ASCII "unfolded cross" display lets you visualise the cube state in the terminal.
 
+A second file (`Rubikmovement_newBeta.py`) wraps the cube in an RL environment with:
 
+- An `RCube` class with OOP move methods
+- Experience replay memory for DQN training
+- Episode statistics tracking
+- An OpenAI Gym / Gymnasium-compatible adapter
+- A `DeepQNetworkAgent` skeleton ready for a Keras model
 
-# Each cell in the list 'r' represents a particular blockface of the rubik's cube .
+## Cube Representation
 
-![down](https://image.ibb.co/jpqnhn/Photo_on_09_03_18_at_1_15_PM.jpg)
+Each cell in the list `r` represents a single face-sticker. Colour key:
 
-So , in the list , r = red , o = orange , g = green , y = yellow , b = blue and w = white 
+| Prefix | Colour |
+|--------|--------|
+| `w`    | White  |
+| `b`    | Blue   |
+| `r`    | Red    |
+| `g`    | Green  |
+| `o`    | Orange |
+| `y`    | Yellow |
 
-every color's 5th element is the centre block of the rubik's cube so it won't change position .
+Every colour's 5th element (e.g. `w5`, `b5`) is the immovable centre sticker.
 
-## When we run 
-------
-print(r)
-display(r)
-left_ac(r)
-left_ac(r)
-display(r)
+## 🛠 Tech Stack
 
------
+| | Technology | Purpose |
+|---|---|---|
+| 🐍 | Python 3 | Core language |
+| 🔢 | NumPy | State arrays and batch operations |
+| 🐼 | Pandas | Episode statistics export |
+| 🤖 | Keras / TensorFlow | DQN model (user-supplied) |
 
-## It displays
+## Getting Started
 
-![down](https://image.ibb.co/i6CKTS/Screen_Shot_2018_03_09_at_1_10_47_PM.png)
+```bash
+# Clone
+git clone https://github.com/stabgan/RemixRubiks.git
+cd RemixRubiks
 
+# Install dependencies
+pip install numpy pandas
 
-# The environment is ready and now I am implementing the AI .
+# Run the basic simulator
+python Rubikmovement.py
+```
 
-Work in Progress 
+### Dependencies
+
+- Python ≥ 3.8
+- `numpy`
+- `pandas`
+- `tensorflow` / `keras` (only needed for the DQN agent in the beta file)
+
+## Files
+
+| File | Description |
+|------|-------------|
+| `Rubikmovement.py` | Standalone cube simulator with functional-style move functions |
+| `Rubikmovement_newBeta.py` | OOP cube + full RL environment, DQN agent, Gym adapter |
+
+## ⚠️ Known Issues
+
+- The RL environment is a work-in-progress — the DQN agent requires a user-supplied Keras model and a JSON config file to run.
+- Loop / repeated-state detection in the environment is stubbed out (returns `False`).
+- The Gym adapter's observation space is a placeholder `(10, 10)` array; a real integration would need a proper encoding of the 54-sticker state.
+
+## License
+
+MIT — see [LICENSE.md](LICENSE.md).
